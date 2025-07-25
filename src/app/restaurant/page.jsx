@@ -11,7 +11,7 @@ const Restaurant = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-   
+     <Navbar />
 
       <main className="flex-grow mt-[10%] flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">

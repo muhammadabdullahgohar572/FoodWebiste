@@ -78,7 +78,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed w-full z-50 transition-all duration-300 ${
+      className={`fixed w-full z-50 transition-all  mb-[50%] duration-300 ${
         scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
