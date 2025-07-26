@@ -177,53 +177,7 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Results Grid */}
-        {!loading && filteredRestaurants.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRestaurants.map((restaurant) => (
-              <div
-                key={restaurant.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={restaurant.image}
-                    alt={restaurant.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = "/images/restaurant-placeholder.jpg";
-                    }}
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {restaurant.name}
-                    </h3>
-                    <div className="flex items-center bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-sm font-medium">
-                      <FiStar className="mr-1" />
-                      {restaurant.rating}
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mt-1">{restaurant.cuisine}</p>
-                  <div className="mt-3 flex items-center text-sm text-gray-500">
-                    <FiMapPin className="mr-1" />
-                    {restaurant.location}
-                  </div>
-                  <div className="mt-2 flex items-center text-sm text-gray-500">
-                    <FiClock className="mr-1" />
-                    {restaurant.deliveryTime} delivery
-                  </div>
-                  <Link href={`/restaurants/${restaurant.id}`}>
-                    <button className="mt-4 w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors">
-                      View Menu
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+    
       </div>
 
       <ToastContainer position="bottom-right" />

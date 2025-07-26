@@ -59,7 +59,7 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: "Home", href: "/", icon: <FaHome /> },
+    { name: "Home", href: "/restaurant", icon: <FaHome /> },
     { name: "Menu", href: "/menu", icon: <FaUtensils /> },
     { name: "About", href: "/about", icon: <FaInfoCircle /> },
     { name: "Contact", href: "/contact", icon: <FaPhoneAlt /> },
@@ -167,7 +167,7 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
-                  href="/login"
+                  href="../restaurant"
                   className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full flex items-center"
                 >
                   <FaUser className="mr-2" />
