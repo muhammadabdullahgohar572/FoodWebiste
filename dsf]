@@ -1,1 +1,198 @@
 MONGO_URI=mongodb+srv://Pizza:Pizza@cluster0.emvzpsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[
+  {
+    "name": "Hassan Ali",
+    "email": "hassan.ali@example.com",
+    "password": "Hassan@123",
+    "location": "Faisal Town",
+    "city": "Lahore",
+    "contactNo": "03011234501",
+    "restaurantName": "Hassan's Grill"
+  },
+  {
+    "name": "Sana Sheikh",
+    "email": "sana.sheikh@example.com",
+    "password": "Sana@456",
+    "location": "Blue Area",
+    "city": "Islamabad",
+    "contactNo": "03021234502",
+    "restaurantName": "Sana's Bistro"
+  },
+  {
+    "name": "Noman Qureshi",
+    "email": "noman.qureshi@example.com",
+    "password": "Noman@789",
+    "location": "Saddar",
+    "city": "Karachi",
+    "contactNo": "03031234503",
+    "restaurantName": "Qureshi BBQ"
+  },
+  {
+    "name": "Areeba Khan",
+    "email": "areeba.khan@example.com",
+    "password": "Areeba@321",
+    "location": "Gulshan Block 5",
+    "city": "Karachi",
+    "contactNo": "03041234504",
+    "restaurantName": "Areeba’s Treats"
+  },
+  {
+    "name": "Junaid Tariq",
+    "email": "junaid.tariq@example.com",
+    "password": "Junaid@111",
+    "location": "Bahria Town",
+    "city": "Lahore",
+    "contactNo": "03051234505",
+    "restaurantName": "Junaid’s Chaska"
+  },
+  {
+    "name": "Hira Memon",
+    "email": "hira.memon@example.com",
+    "password": "Hira@555",
+    "location": "DHA Phase 6",
+    "city": "Karachi",
+    "contactNo": "03061234506",
+    "restaurantName": "Hira’s Kitchenette"
+  },
+  {
+    "name": "Zeeshan Rauf",
+    "email": "zeeshan.rauf@example.com",
+    "password": "Zeeshan@777",
+    "location": "G-11",
+    "city": "Islamabad",
+    "contactNo": "03071234507",
+    "restaurantName": "Zeeshan's Shawarma"
+  },
+  {
+    "name": "Maria Iqbal",
+    "email": "maria.iqbal@example.com",
+    "password": "Maria@888",
+    "location": "Iqbal Town",
+    "city": "Lahore",
+    "contactNo": "03081234508",
+    "restaurantName": "Maria’s Bakehouse"
+  },
+  {
+    "name": "Tariq Mehmood",
+    "email": "tariq.mehmood@example.com",
+    "password": "Tariq@000",
+    "location": "Korangi",
+    "city": "Karachi",
+    "contactNo": "03091234509",
+    "restaurantName": "Tariq’s Tandoor"
+  },
+  {
+    "name": "Farah Anwar",
+    "email": "farah.anwar@example.com",
+    "password": "Farah@333",
+    "location": "F-6",
+    "city": "Islamabad",
+    "contactNo": "03101234510",
+    "restaurantName": "Farah's Fine Dine"
+  },
+  {
+    "name": "Shahzad Gill",
+    "email": "shahzad.gill@example.com",
+    "password": "Shahzad@123",
+    "location": "Nazimabad",
+    "city": "Karachi",
+    "contactNo": "03111234511",
+    "restaurantName": "Gill's Kitchen"
+  },
+  {
+    "name": "Nida Zafar",
+    "email": "nida.zafar@example.com",
+    "password": "Nida@456",
+    "location": "Askari 10",
+    "city": "Lahore",
+    "contactNo": "03121234512",
+    "restaurantName": "Nida's Desserts"
+  },
+  {
+    "name": "Usama Khan",
+    "email": "usama.khan@example.com",
+    "password": "Usama@789",
+    "location": "Gulberg",
+    "city": "Lahore",
+    "contactNo": "03131234513",
+    "restaurantName": "Khan Broast Center"
+  },
+  {
+    "name": "Zainab Rehman",
+    "email": "zainab.rehman@example.com",
+    "password": "Zainab@321",
+    "location": "DHA 2",
+    "city": "Islamabad",
+    "contactNo": "03141234514",
+    "restaurantName": "Rehman Rooftop Café"
+  },
+  {
+    "name": "Adnan Malik",
+    "email": "adnan.malik@example.com",
+    "password": "Adnan@999",
+    "location": "Johar Town",
+    "city": "Lahore",
+    "contactNo": "03151234515",
+    "restaurantName": "Malik’s Mix Grill"
+  },
+  {
+    "name": "Iqra Yousaf",
+    "email": "iqra.yousaf@example.com",
+    "password": "Iqra@222",
+    "location": "F.B. Area",
+    "city": "Karachi",
+    "contactNo": "03161234516",
+    "restaurantName": "Iqra’s Snacks"
+  },
+  {
+    "name": "Adeel Nisar",
+    "email": "adeel.nisar@example.com",
+    "password": "Adeel@444",
+    "location": "G-8",
+    "city": "Islamabad",
+    "contactNo": "03171234517",
+    "restaurantName": "Adeel’s Afghani Foods"
+  },
+  {
+    "name": "Komal Javed",
+    "email": "komal.javed@example.com",
+    "password": "Komal@111",
+    "location": "PECHS Block 2",
+    "city": "Karachi",
+    "contactNo": "03181234518",
+    "restaurantName": "Komal’s Café"
+  },
+  {
+    "name": "Yasir Abbasi",
+    "email": "yasir.abbasi@example.com",
+    "password": "Yasir@101",
+    "location": "Samanabad",
+    "city": "Lahore",
+    "contactNo": "03191234519",
+    "restaurantName": "Abbasi's Pizza Point"
+  },
+  {
+    "name": "Mahnoor Saeed",
+    "email": "mahnoor.saeed@example.com",
+    "password": "Mahnoor@555",
+    "location": "Gulshan Block 13D",
+    "city": "Karachi",
+    "contactNo": "03201234520",
+    "restaurantName": "Saeed Family Fast Food"
+  }
+]

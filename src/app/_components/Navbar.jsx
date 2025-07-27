@@ -59,7 +59,7 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: "Home", href: "/restaurant", icon: <FaHome /> },
+    { name: "Home", href: "/", icon: <FaHome /> },
     { name: "Menu", href: "/menu", icon: <FaUtensils /> },
     { name: "About", href: "/about", icon: <FaInfoCircle /> },
     { name: "Contact", href: "/contact", icon: <FaPhoneAlt /> },

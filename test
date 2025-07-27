@@ -1,0 +1,117 @@
+"use client";
+import { useState } from "react";
+
+const HomePage = () => {
+  const [data, setData] = useState([]);
+  const [location, setLocation] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchRestaurants = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (location) params.append("location", location);
+      if (searchTerm) params.append("restaurantName", searchTerm);
+
+      const res = await fetch(`http://localhost:3000/api/coutromer?${params}`);
+      const json = await res.json();
+      if (json.success) {
+        setData(json.data);
+      } else {
+        console.warn("Error:", json.error);
+        setData([]);
+      }
+    } catch (err) {
+      console.warn(err);
+      setData([]);
+    }
+    setLoading(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchRestaurants();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-orange-500 py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-4xl font-bold text-white mb-6">
+            Discover the best food in your city
+          </h1>
+          <form onSubmit={handleSubmit} className="mt-8">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <select
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="relative flex-grow block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+                <option value="">All Cities</option>
+                <option value="Karachi">Karachi</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Islamabad">Islamabad</option>
+              </select>
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                placeholder="Search for restaurants..."
+                className="relative flex-grow block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 shadow-sm transition-colors"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          </div>
+        ) : data.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-medium text-gray-900 mb-2">No restaurants found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {location ? `Restaurants in ${location}` : "All Restaurants"}
+              </h2>
+              <p className="text-gray-600">
+                {data.length} {data.length === 1 ? "result" : "results"}
+              </p>
+            </div>
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {data.map((restaurant) => (
+                <div key={restaurant._id} className="bg-white p-6 rounded-lg shadow-md">
+                  <h3 className="text-lg font-semibold mb-2">{restaurant.restaurantName}</h3>
+                  <p className="text-gray-700">{restaurant.name}</p>
+                  <p className="text-gray-600">{restaurant.city}, {restaurant.location}</p>
+                  <p className="text-gray-600">{restaurant.contactNo}</p>
+                  <Link
+                    href="#"
+                    className="mt-3 inline-block text-orange-600 hover:underline"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;

@@ -1,94 +1,58 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FiSearch, FiMapPin, FiStar, FiClock } from "react-icons/fi";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
 const HomePage = () => {
-  // Sample data - replace with your actual API data
-  const sampleRestaurants = [
-    {
-      id: 1,
-      name: "Tasty Bites",
-      cuisine: "Indian",
-      rating: 4.5,
-      deliveryTime: "30-45 min",
-      image: "/images/restaurant1.jpg",
-      location: "Downtown",
-    },
-    {
-      id: 2,
-      name: "Burger Palace",
-      cuisine: "American",
-      rating: 4.2,
-      deliveryTime: "20-35 min",
-      image: "/images/restaurant2.jpg",
-      location: "Midtown",
-    },
-    {
-      id: 3,
-      name: "Sushi World",
-      cuisine: "Japanese",
-      rating: 4.7,
-      deliveryTime: "25-40 min",
-      image: "/images/restaurant3.jpg",
-      location: "Uptown",
-    },
-    {
-      id: 4,
-      name: "Pasta Haven",
-      cuisine: "Italian",
-      rating: 4.3,
-      deliveryTime: "35-50 min",
-      image: "/images/restaurant4.jpg",
-      location: "Downtown",
-    },
-  ];
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("All");
-  const [filteredRestaurants, setFilteredRestaurants] = useState(sampleRestaurants);
-  const [locations, setLocations] = useState(["All"]);
+  const [locations, setLocations] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // In a real app, you would fetch this data from your API
-  useEffect(() => {
-    // Extract unique locations from restaurants
-    const uniqueLocations = ["All", ...new Set(sampleRestaurants.map(r => r.location))];
-    setLocations(uniqueLocations);
-  }, []);
+  const fetchLocations = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/coutromer/Location");
+      const json = await res.json();
+      setLocations(json);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
 
-  // Filter restaurants based on search term and location
-  useEffect(() => {
+  const fetchRestaurants = async () => {
     setLoading(true);
-    let results = sampleRestaurants;
+    try {
+      const params = new URLSearchParams();
+      if (selectedLocation) params.append("location", selectedLocation);
+      if (searchTerm) params.append("restaurantName", searchTerm);
 
-    // Filter by location
-    if (selectedLocation !== "All") {
-      results = results.filter(restaurant => 
-        restaurant.location === selectedLocation
+      const res = await fetch(
+        `http://localhost:3000/api/coutromer?${params.toString()}`
       );
+      const json = await res.json();
+      if (json.success) {
+        setRestaurants(json.data);
+      } else {
+        console.error("Error:", json.error);
+        setRestaurants([]);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setRestaurants([]);
     }
-
-    // Filter by search term (name or cuisine)
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      results = results.filter(restaurant => 
-        restaurant.name.toLowerCase().includes(term) || 
-        restaurant.cuisine.toLowerCase().includes(term)
-      );
-    }
-
-    setFilteredRestaurants(results);
     setLoading(false);
-  }, [searchTerm, selectedLocation]);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // In a real app, you might trigger an API call here
-    toast.info(`Searching for "${searchTerm}" in ${selectedLocation}`);
+    fetchRestaurants();
   };
+
+  useEffect(() => {
+    fetchLocations();
+    fetchRestaurants();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,43 +62,71 @@ const HomePage = () => {
           <h1 className="text-4xl font-bold text-white mb-6">
             Discover the best food in your city
           </h1>
-          
-          {/* Search Form */}
+
           <form onSubmit={handleSearch} className="mt-8">
             <div className="flex flex-col sm:flex-row gap-2">
-              {/* Location Select */}
+              {/* Location Dropdown */}
               <div className="relative flex-grow">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMapPin className="text-gray-500" />
+                  <svg
+                    className="text-gray-500 w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.071 4.929a10 10 0 11-14.142 0M12 11v10"
+                    />
+                  </svg>
                 </div>
                 <select
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 >
-                  {locations.map((location) => (
-                    <option key={location} value={location}>
+                  <option value="">All Locations</option>
+                  {locations.map((location, index) => (
+                    <option key={index} value={location}>
                       {location}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               {/* Search Input */}
               <div className="relative flex-grow">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiSearch className="text-gray-500" />
+                  <svg
+                    className="text-gray-500 w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
                 </div>
                 <input
                   type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search for restaurants or cuisines..."
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              
-              {/* Search Button */}
+
               <button
                 type="submit"
                 className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 shadow-sm transition-colors"
@@ -151,10 +143,13 @@ const HomePage = () => {
         {/* Results Header */}
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">
-            {selectedLocation === "All" ? "All Restaurants" : `Restaurants in ${selectedLocation}`}
+            {selectedLocation
+              ? `Restaurants in ${selectedLocation}`
+              : "All Restaurants"}
           </h2>
           <p className="text-gray-600">
-            {filteredRestaurants.length} {filteredRestaurants.length === 1 ? "result" : "results"}
+            {restaurants.length}{" "}
+            {restaurants.length === 1 ? "result" : "results"}
           </p>
         </div>
 
@@ -165,8 +160,36 @@ const HomePage = () => {
           </div>
         )}
 
+        {/* Restaurant Grid */}
+        {!loading && (
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {restaurants.map((restaurant) => (
+              <div
+                key={restaurant._id}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <Link href={`../explore/${restaurant._id}`} passHref>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {restaurant.restaurantName}
+                    </h3>
+                    <p className="text-gray-700">{restaurant.cuisineType}</p>
+                    <p className="text-gray-600">
+                      {restaurant.city}, {restaurant.location}
+                    </p>
+                    <p className="text-gray-600">{restaurant.contactNo}</p>
+                    <div className="mt-3 inline-block text-orange-600 hover:underline">
+                      View Details
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* No Results */}
-        {!loading && filteredRestaurants.length === 0 && (
+        {!loading && restaurants.length === 0 && (
           <div className="text-center py-12">
             <h3 className="text-xl font-medium text-gray-900 mb-2">
               No restaurants found
@@ -176,11 +199,7 @@ const HomePage = () => {
             </p>
           </div>
         )}
-
-    
       </div>
-
-      <ToastContainer position="bottom-right" />
     </div>
   );
 };

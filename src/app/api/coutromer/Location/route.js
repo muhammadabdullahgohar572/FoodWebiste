@@ -8,11 +8,9 @@ export const GET = async () => {
 
     let result = await Restaurant.find();
     result = result.map(
-      (item) => item.city.charAt(0).toUpperCase() + item.city.splice(1)
+      (item) => item.city.charAt(0).toUpperCase() + item.city.slice(1)
     );
-
-    result = [...new Set(result.map((item) => item))];
-
+    result = [...new Set(result)];
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json({
