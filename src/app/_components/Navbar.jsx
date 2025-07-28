@@ -20,41 +20,39 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const pathname = usePathname();
   const route = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in (check localStorage or token)
     const checkAuth = () => {
       const user = localStorage.getItem("restaurantUser");
-      if (user) {
-        // If user is logged in and on the homepage
-        if (pathname === "/") {
-          route.push("../restaurant/dashbored"); // Fixed typo in "dashboard"
-        }
-        // Add other redirect conditions as needed
-      }
-
       setIsLoggedIn(!!user);
     };
 
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 10);
+    };
+
+    const updateCartCount = () => {
+      const cartData = localStorage.getItem("cart");
+      setCartCount(cartData ? JSON.parse(cartData).length : 0);
     };
 
     checkAuth();
+    updateCartCount();
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("restaurantUser");
     setIsLoggedIn(false);
-    // Optional: redirect to home page
     window.location.href = "/";
   };
 
@@ -66,19 +64,13 @@ const Navbar = () => {
   ];
 
   const mobileNavVariants = {
-    open: {
-      x: 0,
-      transition: { type: "spring", stiffness: 300, damping: 30 },
-    },
-    closed: {
-      x: "100%",
-      transition: { type: "spring", stiffness: 300, damping: 30 },
-    },
+    open: { x: 0 },
+    closed: { x: "100%" },
   };
 
   return (
     <header
-      className={`fixed w-full z-50 transition-all  mb-[50%] duration-300 ${
+      className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
@@ -88,8 +80,6 @@ const Navbar = () => {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center"
           >
             <Link
               href="/"
@@ -102,17 +92,11 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link, index) => (
-              <motion.div
-                key={link.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-              >
+            {navLinks.map((link) => (
+              <motion.div key={link.name} whileHover={{ scale: 1.05 }}>
                 <Link
                   href={link.href}
-                  className="flex items-center text-gray-700 hover:text-orange-600 transition-colors"
+                  className="flex items-center text-gray-700 hover:text-orange-600"
                 >
                   <span className="mr-2">{link.icon}</span>
                   {link.name}
@@ -121,7 +105,7 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Right side icons (Desktop) */}
+          {/* Right side icons */}
           <div className="hidden md:flex items-center space-x-6">
             <motion.div whileHover={{ scale: 1.1 }}>
               <button className="text-gray-700 hover:text-orange-600">
@@ -130,12 +114,14 @@ const Navbar = () => {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.1 }}>
-              <button className="text-gray-700 hover:text-orange-600 relative">
-                <FaShoppingCart className="text-xl" />
-                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  3
-                </span>
-              </button>
+              <Link href="../restaurant/Card">
+                <button className="text-gray-700 hover:text-orange-600 relative">
+                  <FaShoppingCart className="text-xl" />
+                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                </button>
+              </Link>
             </motion.div>
 
             {isLoggedIn ? (
@@ -148,18 +134,14 @@ const Navbar = () => {
                     <FaUser className="text-xl" />
                   </Link>
                 </motion.div>
-                <motion.div
+                <motion.button
+                  onClick={handleLogout}
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full flex items-center"
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
-                  <button
-                    onClick={handleLogout}
-                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full flex items-center"
-                  >
-                    <FaSignOutAlt className="mr-2" />
-                    Logout
-                  </button>
-                </motion.div>
+                  <FaSignOutAlt className="mr-2" />
+                  Logout
+                </motion.button>
               </>
             ) : (
               <motion.div
@@ -179,12 +161,17 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-4">
-            <button className="text-gray-700">
-              <FaShoppingCart className="text-xl" />
-            </button>
+            <Link href="../restaurant/Card">
+              <button className="text-gray-700 relative">
+                <FaShoppingCart className="text-xl" />
+                <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </button>
+            </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 focus:outline-none"
+              className="text-gray-700"
             >
               {isOpen ? (
                 <FaTimes className="text-xl" />
@@ -199,91 +186,74 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={mobileNavVariants}
-            className="md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50"
-          >
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-8">
-                <Link href="/" className="text-xl font-bold text-orange-600">
-                  FoodExpress
-                </Link>
+          <>
+            <motion.div
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={mobileNavVariants}
+              className="md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50"
+            >
+              <div className="p-4">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-700"
+                  className="absolute top-4 right-4 text-gray-700"
                 >
                   <FaTimes className="text-xl" />
                 </button>
-              </div>
 
-              <nav className="flex flex-col space-y-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center text-gray-700 hover:text-orange-600 text-lg"
-                  >
-                    <span className="mr-3">{link.icon}</span>
-                    {link.name}
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="mt-12 pt-6 border-t border-gray-200">
-                {isLoggedIn ? (
-                  <>
+                <div className="mt-12 space-y-4">
+                  {navLinks.map((link) => (
                     <Link
-                      href="/profile"
+                      key={link.name}
+                      href={link.href}
+                      className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded"
                       onClick={() => setIsOpen(false)}
-                      className="block w-full mb-4 text-center py-2 text-gray-700 hover:text-orange-600"
                     >
-                      <div className="flex items-center justify-center">
-                        <FaUser className="mr-2" />
-                        My Profile
-                      </div>
+                      <span className="mr-3">{link.icon}</span>
+                      {link.name}
                     </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsOpen(false);
-                      }}
-                      className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-center py-3 rounded-full"
-                    >
-                      <div className="flex items-center justify-center">
-                        <FaSignOutAlt className="mr-2" />
-                        Logout
-                      </div>
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    href="/login"
-                    onClick={() => setIsOpen(false)}
-                    className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-center py-3 rounded-full"
-                  >
-                    Login / Sign Up
-                  </Link>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  ))}
 
-      {/* Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black z-40 md:hidden"
-          />
+                  {isLoggedIn ? (
+                    <>
+                      <Link
+                        href="/profile"
+                        className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <FaUser className="mr-3" />
+                        Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center p-2 text-red-600 hover:bg-red-50 rounded"
+                      >
+                        <FaSignOutAlt className="mr-3" />
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      href="../restaurant"
+                      className="flex items-center p-2 text-orange-600 hover:bg-orange-50 rounded"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <FaUser className="mr-3" />
+                      Login
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black z-40 md:hidden"
+            />
+          </>
         )}
       </AnimatePresence>
     </header>
